@@ -27,6 +27,10 @@ Generate ASCII table on the fly ...  Installation is simple as
 - Set custom caption
 - Optional reflowing of paragraphs in multi-line cells.
 
+#### fork info:
+- sepate render functions for headers, rows and footer
+- flag headersDisabled for disabling headers rendering in `Render` func
+
 #### Example   1 - Basic
 ```go
 data := [][]string{

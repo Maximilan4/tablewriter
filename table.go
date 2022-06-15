@@ -84,6 +84,7 @@ type Table struct {
 	columnsParams           []string
 	footerParams            []string
 	columnsAlign            []int
+	headersDisabled         bool
 }
 
 // Start New Table
@@ -125,10 +126,35 @@ func NewWriter(writer io.Writer) *Table {
 
 // Render table output
 func (t *Table) Render() {
-	if t.borders.Top {
-		t.printLine(true)
+	if t.headersDisabled {
+		t.RenderHeader()
 	}
-	t.printHeading()
+
+	t.RenderRows()
+	t.RenderFooter()
+}
+
+//ClearHeaders - clears stored headers
+func (t *Table) ClearHeaders() {
+	t.headers = [][]string{}
+}
+
+//DisableHeaders - set a flag, which disable/enable headers rendering on Render method
+func (t *Table) DisableHeaders(val bool) {
+	t.headersDisabled = val
+}
+
+//RenderFooter - renders footer only
+func (t *Table) RenderFooter() {
+	t.printFooter()
+
+	if t.caption {
+		t.printCaption()
+	}
+}
+
+//RenderRows - renders rows only
+func (t *Table) RenderRows() {
 	if t.autoMergeCells {
 		t.printRowsMergeCells()
 	} else {
@@ -137,11 +163,14 @@ func (t *Table) Render() {
 	if !t.rowLine && t.borders.Bottom {
 		t.printLine(true)
 	}
-	t.printFooter()
+}
 
-	if t.caption {
-		t.printCaption()
+//RenderHeader - renders headers only
+func (t *Table) RenderHeader() {
+	if t.borders.Top {
+		t.printLine(true)
 	}
+	t.printHeading()
 }
 
 const (
